@@ -1,5 +1,5 @@
 # SDEdit-AudioLDM2
-This is the SDEdit implementation for AudioLDM2 use in [AP-adapter](https://github.com/fundwotsai2001/AP-adapter/tree/master). 
+This is the SDEdit implementation for AudioLDM2 use in [AP-adapter](https://github.com/fundwotsai2001/AP-adapter/tree/master) "Audio Prompt Adapter: Unleashing Music Editing Abilities for Text-to-Music with Lightweight Finetuning" in Proc. Int. Society for Music Information Retrieval Conf. (ISMIR), 2024.. 
 ## Installation
 ```
 git clone https://github.com/fundwotsai2001/SDEdit-AudioLDM2.git
