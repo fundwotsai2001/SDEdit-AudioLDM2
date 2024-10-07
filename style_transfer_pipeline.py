@@ -906,26 +906,26 @@ class AudioLDM2Pipeline(DiffusionPipeline,TextualInversionLoaderMixin):
         # 5. Prepare latent variables
         num_channels_latents = self.unet.config.in_channels
 
+        ############# For SDEdit #############################
+        # Get mel from the input audio
         mel = wav_to_mel(audio_path,
                         10,
                         augment_data=False,
                         mix_data=None,
                         snr=None)
-        # print("mel shape", mel.shape)
-        mel = mel.unsqueeze(0)
-        mel = mel.to(device)
-        mel = mel.to(torch.float16)
+        mel = mel.unsqueeze(0).to(device).to(torch.float16)
+        # Decode mel
         latents = self.vae.encode(mel).latent_dist.sample()
-        
         latents = latents * self.vae.config.scaling_factor
         noise = torch.randn_like(latents)
-        print("timesteps",timesteps)
+        # Decide the noise level
         shallow_reverse_step = int(num_inference_steps * (1 - noise_scale))
-        print("shallow_reverse_steps",timesteps[shallow_reverse_step:])
         timesteps = timesteps[shallow_reverse_step:]
         timesteps_tensor = torch.tensor([timesteps[0]], dtype=torch.int32)
+        # Add the coresponding noise to the latent
         noisy_sample = self.scheduler.add_noise(latents,noise,timesteps_tensor)
-        
+        ############# For SDEdit #############################
+
         latents = self.prepare_latents(
             batch_size * num_waveforms_per_prompt,
             num_channels_latents,

@@ -10,11 +10,7 @@ def get_config():
         # But the negative_text_prompt should be the instrument in the 
         # original music.
         "positive_text_prompt": [
-            ["a recording of a marimba solo"],
-            # ["a recording of an acoustic guitar solo"],
-            # ["a recording of a harp solo"],
-            # ["a recording of an cello solo"],
-            # ["a recording of a flute solo"],
+            ["a recording of a jazz piano solo"],
             ],
         "negative_text_prompt": ["Low quality"],
         "audio_length_in_s" : 10

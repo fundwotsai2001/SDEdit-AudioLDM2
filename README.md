@@ -10,3 +10,29 @@ You can edit the config.py file. Most importantly, if noise_scale = 1.0, it mean
 ```
 python inference.py
 ```
+## Key change from original AudioLDM2
+Basically we add a few lines to encode the mel and add desired degree of noise. All other parts remains the same.
+```
+# Get mel from the input audio
+mel = wav_to_mel(audio_path,
+                10,
+                augment_data=False,
+                mix_data=None,
+                snr=None)
+mel = mel.unsqueeze(0).to(device).to(torch.float16)
+
+# Decode mel
+latents = self.vae.encode(mel).latent_dist.sample()
+latents = latents * self.vae.config.scaling_factor
+noise = torch.randn_like(latents)
+
+# Decide the noise level
+shallow_reverse_step = int(num_inference_steps * (1 - noise_scale))
+timesteps = timesteps[shallow_reverse_step:]
+timesteps_tensor = torch.tensor([timesteps[0]], dtype=torch.int32)
+
+# Add the coresponding noise to the latent
+noisy_sample = self.scheduler.add_noise(latents,noise,timesteps_tensor)
+```
+## Acknowledgments
+This code is heavily based on [AudioLDM2](https://huggingface.co/docs/diffusers/main/en/api/pipelines/audioldm2#diffusers.AudioLDM2UNet2DConditionModel), [Diffusers](https://github.com/huggingface/diffusers)
